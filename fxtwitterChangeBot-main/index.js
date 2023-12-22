@@ -34,8 +34,6 @@ client.on("messageCreate", async (message) => {
   // メッセージが "https://twitter.com/username/status/xxxxxx" または "https://x.com/username/status/xxxxxx" の形式を確認する。
   if (content.match(/https:\/\/(twitter\.com|x\.com)\/[^/]+\/status\/\d+/)) {
     try {
-      //console.log("try (for debug)");
-      //await message.delete();
 
       // twitter.comの場合は、fxtwitter.comに変更し、x.comの時は、fixupx.comに変更する。
       const updatedContent = content
