@@ -40,7 +40,7 @@ client.on("messageCreate", async (message) => {
         .replace(/https:\/\/twitter\.com/g, "https://fxtwitter.com")
         .replace(/https:\/\/x\.com/g, "https://fixupx.com");
 
-      const newMessage = `<@${message.author.id}>   ${updatedContent}`;
+      const newMessage = `${updatedContent}`;
       message.channel.send(newMessage);
     } catch (error) {
       console.error("メッセージの処理中にエラーが発生しました:", error);
