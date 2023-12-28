@@ -66,17 +66,25 @@ client.on("messageCreate", async (message) => {
         }
         
       }
-      const embed_info = new EmbedBuilder()
+      const embed_info = new EmbedBuilder()         // 埋め込み上にidとusernameを表示 (悪意のある投稿対応)
         .setColor(0xFF0000)
-        .addFields({name:'投稿者',value:`@${message.author.username}`})
+        .addFields({name:'投稿者',value:`<@${message.author.id}>`})
         .setTimestamp();
       
         message.channel.send(
         {content:'',embeds: [embed_info]}
       );
-      count++;                                       //
+      count++;                                       // コンソール上に情報を表示
       const now = new Date();
-      console.log('------\n',count,'\n',now.toString(),'\n',`@${message.author.username}`,'\n------');
+      console.log('------\n',
+      count,
+      '\n',
+      now.toString(),
+      '\n',
+      `@${message.author.id}`,
+      '\n',
+      `@${message.author.username}`,
+      '\n------');
     } catch (error) {
       console.error("メッセージの処理中にエラーが発生しました:", error);
     }
