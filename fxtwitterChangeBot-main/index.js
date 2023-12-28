@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { Client, GatewayIntentBits, Intents } = require("discord.js");
+const { Client, GatewayIntentBits, Intents, EmbedBuilder } = require("discord.js");
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, 
@@ -13,7 +13,7 @@ const config = JSON.parse(fs.readFileSync("config.json"));
 client.once("ready", () => {
   console.log(`ログインしました。${client.user.tag}!`);
 });
-
+var count = 0;  
 client.on("messageCreate", async (message) => {
   if (message.author.bot) {
     return;
@@ -34,41 +34,49 @@ client.on("messageCreate", async (message) => {
   // メッセージが "https://twitter.com/username/status/xxxxxx" または "https://x.com/username/status/xxxxxx" の形式を確認する。
   if (content.match(/https:\/\/(twitter\.com|x\.com)\/[^/]+\/status\/\d+/)) {
     try {
-      //console.log("try \n",);   //fordebug
-      var count = 0;      
+      //console.log("try \n",);   //fordebug    
       var replace_char,temp_char;
       replace_char = content;
       while(temp_char!=replace_char){
         temp_char = replace_char;
         replace_char = replace_char.replace(/\r|\n/g, ' ');           //タブ・改行コードを変換
         replace_char = replace_char.replace(/[\s\u{3000}]/ug,' ');    //空白大文字を空白小文字に変換
-        //console.log("タブなど変換\n",replace_char);
       }
       var replace_char2,temp_char2;
       replace_char2 = replace_char;
       while (temp_char2!=replace_char2){
         temp_char2 = replace_char2;
         var replace_char2 = replace_char2.replace('  ',' ')           //空白を減らしていく
-       // console.log("空白変換\n",replace_char2);
       }
       const split_char = replace_char2.split(' ');                    //空白を区切りに配列に格納
-      //console.log("try2 \n",split_char);                            //fordebug
       for(let i=0;i<split_char.length;i++){
         if(split_char[i].match(/https:\/\/(twitter\.com|x\.com)\/[^/]+\/status\/\d+/)){
           // twitter.comの場合は、fxtwitter.comに変更し、x.comの時は、fixupx.comに変更する。
           const updatedContent = split_char[i]
           .replace(/https:\/\/twitter\.com/g, "https://fxtwitter.com")
           .replace(/https:\/\/x\.com/g, "https://fixupx.com");
+
           const newMessage = `${updatedContent}`;
-          message.channel.send(newMessage);
-          count++;
-          console.log("",count);
+          message.channel.send(
+            {content:newMessage}
+          );   
+
         }else {
           //console.log("else \n",split_char[i]);   //fordebug
         }
+        
       }
-
-    
+      const embed_info = new EmbedBuilder()
+        .setColor(0xFF0000)
+        .addFields({name:'投稿者',value:`@${message.author.username}`})
+        .setTimestamp();
+      
+        message.channel.send(
+        {content:'',embeds: [embed_info]}
+      );
+      count++;                                       //
+      const now = new Date();
+      console.log('------\n',count,'\n',now.toString(),'\n',`@${message.author.username}`,'\n------');
     } catch (error) {
       console.error("メッセージの処理中にエラーが発生しました:", error);
     }

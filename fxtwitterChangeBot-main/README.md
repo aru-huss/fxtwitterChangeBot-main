@@ -10,7 +10,7 @@
 
 twitter.comを投稿した際にfxtwitter.comに修正するコード
 
-https://note.com/kinoko1216/n/nfb73752a0893
-上記ブログを参考に@aruhussが改変
+https://note.com/kinoko1216/n/nfb73752a0893  
+上記ブログを参考に@aruhussが改変  
+Thanks for @Kinoko_2K  
 
-<div align='center'><a href='https://www.websitecounterfree.com'><img src='https://www.websitecounterfree.com/c.php?d=9&id=44370&s=1' border='0' alt='Website Counter'></a><br / ><small><a href='https://www.websitecounterfree.com' title="Free Website Counter">Website Counter</a></small></div>
