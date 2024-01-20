@@ -39,7 +39,7 @@ client.on("messageCreate", async (message) => {
       replace_char = content;
       while(temp_char!=replace_char){
         temp_char = replace_char;
-        replace_char = replace_char.replace(/\r|\n/g, ' ');           //タブ・改行コードを変換
+        replace_char = replace_char.replace(/\r?\n|\r/g, ' ');           //タブ・改行コードを変換
         replace_char = replace_char.replace(/[\s\u{3000}]/ug,' ');    //空白大文字を空白小文字に変換
       }
       var replace_char2,temp_char2;
@@ -50,20 +50,44 @@ client.on("messageCreate", async (message) => {
       }
       const split_char = replace_char2.split(' ');                    //空白を区切りに配列に格納
       for(let i=0;i<split_char.length;i++){
-        if(split_char[i].match(/https:\/\/(twitter\.com|x\.com)\/[^/]+\/status\/\d+/)){
-          // twitter.comの場合は、fxtwitter.comに変更し、x.comの時は、fixupx.comに変更する。
-          const updatedContent = split_char[i]
-          .replace(/https:\/\/twitter\.com/g, "https://fxtwitter.com")
-          .replace(/https:\/\/x\.com/g, "https://fixupx.com");
-
-          const newMessage = `${updatedContent}`;
+        if(split_char[i].match(/https:\/\/(twitter\.com|)\/[^/]+\/status\/\d+/)){   // https://twitter.com が含まれるときの処理
+          // twitter.comの場合は、fxtwitter.comに変更する
+          const str_fxtwitter = "https://fxtwitter.com";
+          var Str_updatedContent_twitter = split_char[i].replace(/https:\/\/twitter\.com/g, str_fxtwitter);
+          var Str_message_twitter;
+          // https://から始まる文字列を抜きだし、 「?s=**」の共有元端末情報の有り無しによって抜き出す文字列を決める
+          if(Str_updatedContent_twitter.match(/\?s=[0-9][0-9]/g)){
+            Str_message_twitter = Str_updatedContent_twitter.slice(Str_updatedContent_twitter.search(str_fxtwitter),Str_updatedContent_twitter.search(/\/status/)+32);      
+          }else{
+            Str_message_twitter = Str_updatedContent_twitter.slice(Str_updatedContent_twitter.search(str_fxtwitter),Str_updatedContent_twitter.search(/\/status/)+27);
+          }
+          const newMessage_twitter = `${Str_message_twitter}`;
           message.channel.send(
-            {content:newMessage}
-          );   
+            {content:newMessage_twitter}
+          );
+
+        }else if(split_char[i].match(/https:\/\/(x\.com)\/[^/]+\/status\/\d+/)){
+          // x.comの場合は、fixupx.comに変更する
+          const str_fixupx = "https://fixupx.com";
+          var Str_updatedContent_x = split_char[i].replace(/https:\/\/x\.com/g, str_fixupx);
+          var Str_message_x;
+          // https://から始まる文字列を抜きだし、 「?s=**」の共有元端末情報の有り無しによって抜き出す文字列を決める
+          if(Str_updatedContent_x.match(/\?s=[0-9][0-9]/g)){
+            Str_message_x = Str_updatedContent_x.slice(Str_updatedContent_x.search(str_fixupx),Str_updatedContent_x.search(/\/status/)+32);      
+          }else{
+            Str_message_x = Str_updatedContent_x.slice(Str_updatedContent_x.search(str_fixupx),Str_updatedContent_x.search(/\/status/)+27);
+          }
+          const newMessage_x = `${Str_message_x}`;
+          message.channel.send(
+            {content:newMessage_x}
+          );
+          //console.log("x.com \n",Str_message_x);   //fordebug
+          //console.log('開始位置\n',Str_updatedContent_x.search(str_fixupx),'末端位置\n',Str_updatedContent_x.search(/\?s=[0-9][0-9]/)+5);
 
         }else {
-          //console.log("else \n",split_char[i]);   //fordebug
+          // Don't care
         }
+
         
       }
       const embed_info = new EmbedBuilder()         // 埋め込み上にidとusernameを表示 (悪意のある投稿対応)
